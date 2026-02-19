@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Whitepaper: From Arousal Decay to Edge Decay</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&display=swap');
+    body {
+      font-family: 'Crimson Pro', 'Source Serif 4', Georgia, serif;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+      line-height: 1.6;
+      color: #1a1a1a;
+      font-size: 18px;
+    }
+    h1 { font-size: 1.8rem; margin-top: 2rem; border-bottom: 1px solid #ccc; padding-bottom: 0.3em; }
+    h2 { font-size: 1.4rem; margin-top: 1.8rem; }
+    h3 { font-size: 1.2rem; margin-top: 1.4rem; }
+    h4 { font-size: 1.1rem; margin-top: 1.2rem; }
+    .meta { color: #555; font-size: 0.95rem; margin-bottom: 2rem; }
+    .meta p { margin: 0.2em 0; }
+    table { border-collapse: collapse; width: 100%; margin: 1rem 0; }
+    th, td { border: 1px solid #ccc; padding: 0.5rem 0.75rem; text-align: left; }
+    th { background: #f5f5f5; font-weight: 600; }
+    ul { padding-left: 1.5rem; }
+    li { margin: 0.4em 0; }
+    hr { border: none; border-top: 1px solid #ddd; margin: 2rem 0; }
+    .formula-block {
+      margin: 1.2rem 0;
+      padding: 1rem 0;
+      text-align: center;
+    }
+    .formula-block .katex { font-size: 1.15em; }
+    .formula-inline { white-space: nowrap; }
+    footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #ddd; font-size: 0.9rem; color: #666; }
+  </style>
+</head>
+<body>
+  <article>
+    <h1>Whitepaper: From Arousal Decay to Edge Decay — A Unified Formulation for Markets</h1>
+    <div class="meta">
+      <p><strong>Version:</strong> 0.4 &nbsp;|&nbsp; <strong>Author:</strong> Eduard Samokhvalov &nbsp;|&nbsp; <strong>License:</strong> MIT &nbsp;|&nbsp; <strong>Date:</strong> 2025-02-19</p>
+      <p><strong>Tags:</strong> #SensitivityDecay #BiologicalBarrier #RegimeRotation #ArousalEconomics #TradingPsychology</p>
+    </div>
+
+    <h2>Abstract</h2>
+    <p>We derive a mathematical model of <strong>sensitivity decay</strong> and <strong>ceiling effect</strong> from a well-known intimate dynamic: with one fixed "partner" (one stimulus source), responsiveness fades over repeated exposure; "standard" stimulation no longer suffices, and no amount of technique within the same pair can sustainably restore peak response—a <strong>biological barrier</strong>. We then map this formulation one-to-one onto trading: the "partner" becomes the strategy–market pair, arousal becomes edge, and overload becomes regime change. The result is a formal framework for when to rotate strategies, how to size positions, and why diversification across regimes is necessary.</p>
+    <p>This document incorporates <strong>cutting-edge research (2024–2026)</strong>:</p>
+    <ul>
+      <li><strong>Power-law decay</strong> (neural adaptation, primary visual cortex, synaptic vesicle cycle) as an alternative to exponential decay</li>
+      <li><strong>Optimal information gain</strong> at intermediate habituation (eLife 2025, zebrafish)</li>
+      <li><strong>Statistical jump models (JM)</strong> for regime persistence with explicit jump penalties (2024)</li>
+      <li><strong>Continuous regime probability</strong> instead of discrete states (2024)</li>
+      <li><strong>Hybrid ML regime detection</strong> (HMM + XGBoost, RegimeFolio, 2025)</li>
+      <li><strong>Pre-registration with Pre-Analysis Plan (PAP)</strong> for credible inference (2024–2025)</li>
+      <li><strong>Competitive arousal hypothesis</strong> in markets (overbidding, bubbles)</li>
+    </ul>
+
+    <hr>
+
+    <h2>1. The Jessicka Formulation (Intimate Domain)</h2>
+    <p>Call the subject <strong>Jessicka</strong>. Her responsiveness to a single repeated stimulus (one partner, one context) is observed to decay over time; after saturation, only a <strong>regime change</strong> (new context, new intensity, or recovery period) restores sensitivity.</p>
+
+    <h3>1.1 State Variables</h3>
+    <ul>
+      <li><strong>Stimulus source (partner):</strong> <span class="formula-inline" data-math="P"></span> — fixed for the duration of the relationship.</li>
+      <li><strong>Context / regime:</strong> <span class="formula-inline" data-math="C_t \in \{C_1, \ldots, C_K\}"></span> — e.g. same routine vs new setting vs stress vs recovery.</li>
+      <li><strong>Exposure count:</strong> <span class="formula-inline" data-math="n_{P,C}(t)"></span> — number of exposures to <span class="formula-inline" data-math="P"></span> in context <span class="formula-inline" data-math="C"></span> up to time <span class="formula-inline" data-math="t"></span>.</li>
+      <li><strong>Sensitivity (arousal responsiveness):</strong> <span class="formula-inline" data-math="\sigma_{P,C}(n) \in [0,1]"></span>, with <span class="formula-inline" data-math="\sigma_{P,C}(0) = 1"></span>.</li>
+      <li><strong>Peak response (ceiling):</strong> <span class="formula-inline" data-math="\bar{r}_{P,C}"></span> — maximum sustainable response with <span class="formula-inline" data-math="(P,C)"></span>.</li>
+      <li><strong>Effective response:</strong> <span class="formula-inline" data-math="r_{P,C}(t) = \bar{r}_{P,C} \cdot \sigma_{P,C}(n_{P,C}(t))"></span>.</li>
+    </ul>
+
+    <h3>1.2 The Decay Law (Habituation)</h3>
+    <p>With repeated exposure to the same <span class="formula-inline" data-math="(P, C)"></span>, sensitivity decays. Two formulations are supported by recent neuroscience:</p>
+
+    <h4>1.2.1 Exponential Decay (Classical)</h4>
+    <div class="formula-block" data-math="\sigma_{P,C}(n) = e^{-\lambda_{P,C} \, n}"></div>
+    <p><span class="formula-inline" data-math="\lambda_{P,C} > 0"></span>: <strong>decay rate</strong> for this partner–context pair.</p>
+
+    <h4>1.2.2 Power-Law Decay (2023–2025, Neural Adaptation)</h4>
+    <p>Recent research shows that <strong>power-law decay better describes neural adaptation</strong> than exponential decay:</p>
+    <ul>
+      <li><strong>Primary visual cortex:</strong> Magnitude of population adaptation follows a power law with stimulus probability ratios (Nature Communications 2023).</li>
+      <li><strong>Presynaptic vesicle cycle:</strong> Power-law adaptation describes multi-timescale recovery (100 ms to 10+ s) in synaptic terminals (Nature Communications 2025).</li>
+    </ul>
+    <div class="formula-block" data-math="\sigma_{P,C}(n) = (1 + \beta_{P,C} \, n)^{-\eta_{P,C}}"></div>
+    <p><span class="formula-inline" data-math="\beta_{P,C} > 0"></span>, <span class="formula-inline" data-math="\eta_{P,C} > 0"></span>: <strong>power-law parameters</strong>. For <span class="formula-inline" data-math="n \gg 1"></span>, <span class="formula-inline" data-math="\sigma \sim n^{-\eta}"></span>.</p>
+
+    <h3>1.3 Optimal Information Gain (eLife 2025)</h3>
+    <p>A 2025 study (eLife) shows that <strong>intermediate habituation maximizes information gain</strong>—a trade-off between encoding information and energy consumption. Implication: the optimal rotation threshold <span class="formula-inline" data-math="\theta"></span> may lie at an <strong>intermediate</strong> <span class="formula-inline" data-math="\sigma"></span>. The model suggests <span class="formula-inline" data-math="\theta \in [0.3, 0.6]"></span> as a theoretically motivated range.</p>
+
+    <h3>1.4 The Ceiling (Biological Barrier)</h3>
+    <div class="formula-block" data-math="r_{P,C}(t) \leq \bar{r}_{P,C}"></div>
+    <p>No amount of technique can sustainably exceed <span class="formula-inline" data-math="\bar{r}_{P,C}"></span> without changing <span class="formula-inline" data-math="P"></span> or <span class="formula-inline" data-math="C"></span>. That is the <strong>biological barrier</strong>.</p>
+
+    <h3>1.5 Overload (Intensity Threshold)</h3>
+    <div class="formula-block" data-math="\tau_t = \tau_0 \cdot (1 + \alpha \cdot B_t / \bar{B})"></div>
+    <p><span class="formula-inline" data-math="B_t"></span>: current baseline arousal; <span class="formula-inline" data-math="\bar{B}"></span>: long-run average; <span class="formula-inline" data-math="\tau_0"></span>: base threshold.</p>
+
+    <h3>1.6 Recovery and Rotation</h3>
+    <div class="formula-block" data-math="\sigma_{P,C}(n^+) \approx \sigma_{P,C}(n^-) + \gamma_{P,C} \cdot (1 - \sigma_{P,C}(n^-)) \cdot \Delta t"></div>
+    <p><span class="formula-inline" data-math="\gamma_{P,C} \in (0,1)"></span>: <strong>recovery rate</strong>. <strong>Jessicka rule:</strong> Rotate when <span class="formula-inline" data-math="\sigma_{P,C}(n) < \theta"></span>.</p>
+
+    <hr>
+
+    <h2>2. Mapping to Markets (One-to-One)</h2>
+    <table>
+      <tr><th>Intimate (Jessicka)</th><th>Trading</th></tr>
+      <tr><td>Partner <span class="formula-inline" data-math="P"></span></td><td>Strategy <span class="formula-inline" data-math="S"></span></td></tr>
+      <tr><td>Context <span class="formula-inline" data-math="C"></span></td><td>Regime <span class="formula-inline" data-math="R"></span></td></tr>
+      <tr><td>Sensitivity <span class="formula-inline" data-math="\sigma"></span></td><td>Edge responsiveness</td></tr>
+      <tr><td>Peak response <span class="formula-inline" data-math="\bar{r}"></span></td><td>Ceiling edge <span class="formula-inline" data-math="\bar{\mu}_{S,R}"></span></td></tr>
+      <tr><td>Effective response <span class="formula-inline" data-math="r"></span></td><td>Effective edge <span class="formula-inline" data-math="\mu_{S,R}(t)"></span></td></tr>
+      <tr><td>Exposure count <span class="formula-inline" data-math="n"></span></td><td>Number of trades/signals in <span class="formula-inline" data-math="(S,R)"></span></td></tr>
+      <tr><td>Overload threshold <span class="formula-inline" data-math="\tau"></span></td><td>Signal threshold</td></tr>
+      <tr><td>Rotation</td><td>Switch to <span class="formula-inline" data-math="(S', R')"></span> when <span class="formula-inline" data-math="\sigma_{S,R} < \theta"></span></td></tr>
+    </table>
+
+    <hr>
+
+    <h2>3. Market Formulation</h2>
+    <h3>3.1 Decay Models</h3>
+    <ul>
+      <li><strong>Exponential:</strong> <span class="formula-inline" data-math="\sigma_{S,R}(n) = e^{-\lambda_{S,R} n}"></span>, <span class="formula-inline" data-math="\sigma_{S,R}(0) = 1"></span>.</li>
+      <li><strong>Power-law (2024+):</strong> <span class="formula-inline" data-math="\sigma_{S,R}(n) = (1 + \beta_{S,R} n)^{-\eta_{S,R}}"></span>.</li>
+    </ul>
+    <h3>3.2 Core Relations</h3>
+    <ul>
+      <li><strong>Effective edge:</strong> <span class="formula-inline" data-math="\mu_{S,R}(t) = \bar{\mu}_{S,R} \cdot \sigma_{S,R}(n_{S,R}(t))"></span>.</li>
+      <li><strong>Ceiling:</strong> <span class="formula-inline" data-math="\mu_{S,R}(t) \leq \bar{\mu}_{S,R}"></span>.</li>
+      <li><strong>Overload threshold:</strong> <span class="formula-inline" data-math="\tau_t = \tau_0 \cdot (1 + \alpha \cdot V_t / \bar{V})"></span>; position size <span class="formula-inline" data-math="w_{S,R}(t) \propto \sigma_{S,R}(n_{S,R}(t))"></span>.</li>
+      <li><strong>Rotation:</strong> If <span class="formula-inline" data-math="\sigma_{S,R}(n_{S,R}(t)) < \theta"></span>, switch to <span class="formula-inline" data-math="(S', R')"></span>.</li>
+      <li><strong>Allocation:</strong> <span class="formula-inline" data-math="\pi_k(t) \propto \sigma_{S_k,R_k}(n_k(t)) \cdot \bar{\mu}_{S_k,R_k}"></span> (normalized).</li>
+    </ul>
+
+    <hr>
+
+    <h2>5. Summary: The Sex–Market Formula</h2>
+    <table>
+      <tr><th>Concept</th><th>Jessicka</th><th>Markets</th></tr>
+      <tr><td>Decay (exp)</td><td><span class="formula-inline" data-math="\sigma = e^{-\lambda n}"></span></td><td>Same</td></tr>
+      <tr><td>Decay (power-law)</td><td><span class="formula-inline" data-math="\sigma = (1+\beta n)^{-\eta}"></span></td><td>Same</td></tr>
+      <tr><td>Ceiling</td><td><span class="formula-inline" data-math="r \leq \bar{r}"></span></td><td><span class="formula-inline" data-math="\mu \leq \bar{\mu}"></span></td></tr>
+      <tr><td>Effective payoff</td><td><span class="formula-inline" data-math="r = \bar{r} \cdot \sigma"></span></td><td><span class="formula-inline" data-math="\mu = \bar{\mu} \cdot \sigma"></span></td></tr>
+      <tr><td>Overload threshold</td><td><span class="formula-inline" data-math="\tau_t = \tau_0(1 + \alpha B_t/\bar{B})"></span></td><td><span class="formula-inline" data-math="\tau_t = \tau_0(1 + \alpha V_t/\bar{V})"></span></td></tr>
+      <tr><td>Rotation</td><td>when <span class="formula-inline" data-math="\sigma < \theta"></span></td><td>when <span class="formula-inline" data-math="\sigma < \theta"></span></td></tr>
+      <tr><td>Size</td><td>—</td><td><span class="formula-inline" data-math="w \propto \sigma"></span></td></tr>
+    </table>
+
+    <hr>
+
+    <h2>6. Limitations</h2>
+    <p>Parameters must be estimated; regimes are unobserved. This is research/backtesting material, not investment or personal advice.</p>
+
+    <footer>
+      <p><strong>Repository:</strong> <a href="https://github.com">github.com/your-username/sensitivity-decay-trading</a></p>
+      <p><strong>Contact:</strong> [Your LinkedIn / email]</p>
+    </footer>
+  </article>
+
+  <script>
+    document.querySelectorAll('[data-math]').forEach(el => {
+      const displayMode = el.classList.contains('formula-block');
+      katex.render(el.getAttribute('data-math'), el, { displayMode, throwOnError: false });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Whitepaper: От затухания возбуждения к затуханию edge</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&display=swap');
+    body {
+      font-family: 'Crimson Pro', 'Source Serif 4', Georgia, serif;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+      line-height: 1.6;
+      color: #1a1a1a;
+      font-size: 18px;
+    }
+    h1 { font-size: 1.8rem; margin-top: 2rem; border-bottom: 1px solid #ccc; padding-bottom: 0.3em; }
+    h2 { font-size: 1.4rem; margin-top: 1.8rem; }
+    h3 { font-size: 1.2rem; margin-top: 1.4rem; }
+    h4 { font-size: 1.1rem; margin-top: 1.2rem; }
+    .meta { color: #555; font-size: 0.95rem; margin-bottom: 2rem; }
+    .meta p { margin: 0.2em 0; }
+    table { border-collapse: collapse; width: 100%; margin: 1rem 0; }
+    th, td { border: 1px solid #ccc; padding: 0.5rem 0.75rem; text-align: left; }
+    th { background: #f5f5f5; font-weight: 600; }
+    ul { padding-left: 1.5rem; }
+    li { margin: 0.4em 0; }
+    hr { border: none; border-top: 1px solid #ddd; margin: 2rem 0; }
+    .formula-block {
+      margin: 1.2rem 0;
+      padding: 1rem 0;
+      text-align: center;
+    }
+    .formula-block .katex { font-size: 1.15em; }
+    .formula-inline { white-space: nowrap; }
+    footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #ddd; font-size: 0.9rem; color: #666; }
+  </style>
+</head>
+<body>
+  <article>
+    <h1>Whitepaper: От затухания возбуждения к затуханию edge — унифицированная формулировка для рынков</h1>
+    <div class="meta">
+      <p><strong>Версия:</strong> 0.4 &nbsp;|&nbsp; <strong>Автор:</strong> Эдуард Самоквалов &nbsp;|&nbsp; <strong>Лицензия:</strong> MIT &nbsp;|&nbsp; <strong>Дата:</strong> 2025-02-19</p>
+      <p><strong>Теги:</strong> #SensitivityDecay #BiologicalBarrier #RegimeRotation #ArousalEconomics #TradingPsychology</p>
+    </div>
+
+    <h2>Аннотация</h2>
+    <p>Мы выводим математическую модель <strong>затухания чувствительности</strong> и <strong>эффекта потолка</strong> из известной интимной динамики: при одном фиксированном «партнёре» отзывчивость ослабевает при повторных экспозициях; «стандартной» стимуляции уже недостаточно — это <strong>биологический барьер</strong>. Затем мы отображаем эту формулировку один-к-одному на торговлю: «партнёр» становится парой стратегия–рынок, возбуждение — edge, перегрузка — смена режима.</p>
+    <p>Документ опирается на <strong>исследования 2024–2026</strong>:</p>
+    <ul>
+      <li><strong>Степенной decay</strong> (нейронная адаптация, первичная зрительная кора)</li>
+      <li><strong>Оптимальный информационный выигрыш</strong> при промежуточном привыкании (eLife 2025)</li>
+      <li><strong>Статистические jump-модели (JM)</strong> для устойчивости режимов (2024)</li>
+      <li><strong>Непрерывная вероятность режима</strong> (2024)</li>
+      <li><strong>Гибридное ML-детектирование</strong> (HMM + XGBoost, RegimeFolio, 2025)</li>
+      <li><strong>Пре-регистрация с PAP</strong> (2024–2025)</li>
+      <li><strong>Гипотеза конкурентного возбуждения</strong> (перебиды, пузыри)</li>
+    </ul>
+
+    <hr>
+
+    <h2>1. Формулировка Джессики (интимная область)</h2>
+    <p>Назовём субъекта <strong>Джессикой</strong>. Её отзывчивость на один повторяющийся стимул затухает со временем; после насыщения только <strong>смена режима</strong> восстанавливает чувствительность.</p>
+
+    <h3>1.1 Переменные состояния</h3>
+    <ul>
+      <li><strong>Источник стимула (партнёр):</strong> <span class="formula-inline" data-math="P"></span> — фиксирован на время отношений.</li>
+      <li><strong>Контекст / режим:</strong> <span class="formula-inline" data-math="C_t \in \{C_1, \ldots, C_K\}"></span>.</li>
+      <li><strong>Счётчик экспозиций:</strong> <span class="formula-inline" data-math="n_{P,C}(t)"></span>.</li>
+      <li><strong>Чувствительность:</strong> <span class="formula-inline" data-math="\sigma_{P,C}(n) \in [0,1]"></span>, <span class="formula-inline" data-math="\sigma_{P,C}(0) = 1"></span>.</li>
+      <li><strong>Пиковый отклик (потолок):</strong> <span class="formula-inline" data-math="\bar{r}_{P,C}"></span>.</li>
+      <li><strong>Эффективный отклик:</strong> <span class="formula-inline" data-math="r_{P,C}(t) = \bar{r}_{P,C} \cdot \sigma_{P,C}(n_{P,C}(t))"></span>.</li>
+    </ul>
+
+    <h3>1.2 Закон затухания (привыкание)</h3>
+
+    <h4>1.2.1 Экспоненциальный decay (классический)</h4>
+    <div class="formula-block" data-math="\sigma_{P,C}(n) = e^{-\lambda_{P,C} \, n}"></div>
+    <p><span class="formula-inline" data-math="\lambda_{P,C} > 0"></span>: <strong>скорость затухания</strong>.</p>
+
+    <h4>1.2.2 Степенной decay (2023–2025)</h4>
+    <div class="formula-block" data-math="\sigma_{P,C}(n) = (1 + \beta_{P,C} \, n)^{-\eta_{P,C}}"></div>
+    <p><span class="formula-inline" data-math="\beta_{P,C} > 0"></span>, <span class="formula-inline" data-math="\eta_{P,C} > 0"></span>: <strong>параметры степенного закона</strong>. При <span class="formula-inline" data-math="n \gg 1"></span>, <span class="formula-inline" data-math="\sigma \sim n^{-\eta}"></span>.</p>
+
+    <h3>1.3 Оптимальный информационный выигрыш (eLife 2025)</h3>
+    <p>Промежуточное привыкание максимизирует информационный выигрыш. Оптимальный порог ротации <span class="formula-inline" data-math="\theta \in [0.3, 0.6]"></span>.</p>
+
+    <h3>1.4 Потолок (биологический барьер)</h3>
+    <div class="formula-block" data-math="r_{P,C}(t) \leq \bar{r}_{P,C}"></div>
+
+    <h3>1.5 Перегрузка (порог интенсивности)</h3>
+    <div class="formula-block" data-math="\tau_t = \tau_0 \cdot (1 + \alpha \cdot B_t / \bar{B})"></div>
+
+    <h3>1.6 Восстановление и ротация</h3>
+    <div class="formula-block" data-math="\sigma_{P,C}(n^+) \approx \sigma_{P,C}(n^-) + \gamma_{P,C} \cdot (1 - \sigma_{P,C}(n^-)) \cdot \Delta t"></div>
+    <p><span class="formula-inline" data-math="\gamma_{P,C} \in (0,1)"></span>: <strong>скорость восстановления</strong>. <strong>Правило Джессики:</strong> Ротировать при <span class="formula-inline" data-math="\sigma_{P,C}(n) < \theta"></span>.</p>
+
+    <hr>
+
+    <h2>2. Отображение на рынки (один-к-одному)</h2>
+    <table>
+      <tr><th>Интимное (Джессика)</th><th>Торговля</th></tr>
+      <tr><td>Партнёр <span class="formula-inline" data-math="P"></span></td><td>Стратегия <span class="formula-inline" data-math="S"></span></td></tr>
+      <tr><td>Контекст <span class="formula-inline" data-math="C"></span></td><td>Режим <span class="formula-inline" data-math="R"></span></td></tr>
+      <tr><td>Чувствительность <span class="formula-inline" data-math="\sigma"></span></td><td>Отзывчивость edge</td></tr>
+      <tr><td>Пиковый отклик <span class="formula-inline" data-math="\bar{r}"></span></td><td>Потолок edge <span class="formula-inline" data-math="\bar{\mu}_{S,R}"></span></td></tr>
+      <tr><td>Эффективный отклик <span class="formula-inline" data-math="r"></span></td><td>Эффективный edge <span class="formula-inline" data-math="\mu_{S,R}(t)"></span></td></tr>
+      <tr><td>Счётчик экспозиций <span class="formula-inline" data-math="n"></span></td><td>Число сделок/сигналов в <span class="formula-inline" data-math="(S,R)"></span></td></tr>
+      <tr><td>Порог перегрузки <span class="formula-inline" data-math="\tau"></span></td><td>Порог сигнала</td></tr>
+      <tr><td>Ротация</td><td>Переключение на <span class="formula-inline" data-math="(S', R')"></span> при <span class="formula-inline" data-math="\sigma_{S,R} < \theta"></span></td></tr>
+    </table>
+
+    <hr>
+
+    <h2>3. Рыночная формулировка</h2>
+    <h3>3.1 Модели decay</h3>
+    <ul>
+      <li><strong>Экспоненциальная:</strong> <span class="formula-inline" data-math="\sigma_{S,R}(n) = e^{-\lambda_{S,R} n}"></span>, <span class="formula-inline" data-math="\sigma_{S,R}(0) = 1"></span>.</li>
+      <li><strong>Степенная (2024+):</strong> <span class="formula-inline" data-math="\sigma_{S,R}(n) = (1 + \beta_{S,R} n)^{-\eta_{S,R}}"></span>.</li>
+    </ul>
+    <h3>3.2 Основные соотношения</h3>
+    <ul>
+      <li><strong>Эффективный edge:</strong> <span class="formula-inline" data-math="\mu_{S,R}(t) = \bar{\mu}_{S,R} \cdot \sigma_{S,R}(n_{S,R}(t))"></span>.</li>
+      <li><strong>Потолок:</strong> <span class="formula-inline" data-math="\mu_{S,R}(t) \leq \bar{\mu}_{S,R}"></span>.</li>
+      <li><strong>Порог перегрузки:</strong> <span class="formula-inline" data-math="\tau_t = \tau_0 \cdot (1 + \alpha \cdot V_t / \bar{V})"></span>; размер позиции <span class="formula-inline" data-math="w_{S,R}(t) \propto \sigma_{S,R}(n_{S,R}(t))"></span>.</li>
+      <li><strong>Ротация:</strong> Если <span class="formula-inline" data-math="\sigma_{S,R}(n_{S,R}(t)) < \theta"></span>, переключиться на <span class="formula-inline" data-math="(S', R')"></span>.</li>
+      <li><strong>Аллокация:</strong> <span class="formula-inline" data-math="\pi_k(t) \propto \sigma_{S_k,R_k}(n_k(t)) \cdot \bar{\mu}_{S_k,R_k}"></span> (нормализовано).</li>
+    </ul>
+
+    <hr>
+
+    <h2>5. Сводка: формула секс–рынок</h2>
+    <table>
+      <tr><th>Концепция</th><th>Джессика</th><th>Рынки</th></tr>
+      <tr><td>Decay (эксп.)</td><td><span class="formula-inline" data-math="\sigma = e^{-\lambda n}"></span></td><td>То же</td></tr>
+      <tr><td>Decay (степ.)</td><td><span class="formula-inline" data-math="\sigma = (1+\beta n)^{-\eta}"></span></td><td>То же</td></tr>
+      <tr><td>Потолок</td><td><span class="formula-inline" data-math="r \leq \bar{r}"></span></td><td><span class="formula-inline" data-math="\mu \leq \bar{\mu}"></span></td></tr>
+      <tr><td>Эффективный выигрыш</td><td><span class="formula-inline" data-math="r = \bar{r} \cdot \sigma"></span></td><td><span class="formula-inline" data-math="\mu = \bar{\mu} \cdot \sigma"></span></td></tr>
+      <tr><td>Порог перегрузки</td><td><span class="formula-inline" data-math="\tau_t = \tau_0(1 + \alpha B_t/\bar{B})"></span></td><td><span class="formula-inline" data-math="\tau_t = \tau_0(1 + \alpha V_t/\bar{V})"></span></td></tr>
+      <tr><td>Ротация</td><td>при <span class="formula-inline" data-math="\sigma < \theta"></span></td><td>при <span class="formula-inline" data-math="\sigma < \theta"></span></td></tr>
+      <tr><td>Размер</td><td>—</td><td><span class="formula-inline" data-math="w \propto \sigma"></span></td></tr>
+    </table>
+
+    <hr>
+
+    <h2>6. Ограничения</h2>
+    <p>Параметры подлежат оценке; режимы ненаблюдаемы. Это материал для исследований и бэктестинга, не инвестиционная рекомендация.</p>
+
+    <footer>
+      <p><strong>Репозиторий:</strong> <a href="https://github.com">github.com/your-username/sensitivity-decay-trading</a></p>
+      <p><strong>Контакт:</strong> [Ваш LinkedIn / email]</p>
+    </footer>
+  </article>
+
+  <script>
+    document.querySelectorAll('[data-math]').forEach(el => {
+      const displayMode = el.classList.contains('formula-block');
+      katex.render(el.getAttribute('data-math'), el, { displayMode, throwOnError: false });
+    });
+  </script>
+</body>
+</html>

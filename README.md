@@ -16,8 +16,10 @@ Repeated use of the same strategy on the same market regime leads to **sensitivi
 
 | File | Description |
 |------|-------------|
-| [docs/WHITEPAPER_EN.md](docs/WHITEPAPER_EN.md) | Full whitepaper (English): Jessicka formulation, market mapping, **extended decay models** (exponential + power-law), **design of experiments** (double-blind + PAP) |
-| [docs/WHITEPAPER_RU.md](docs/WHITEPAPER_RU.md) | Full whitepaper (Russian) |
+| [docs/WHITEPAPER_EN.html](docs/WHITEPAPER_EN.html) | **Whitepaper (EN)** — открыть в браузере для красивых формул / open in browser for book-style math |
+| [docs/WHITEPAPER_RU.html](docs/WHITEPAPER_RU.html) | **Whitepaper (RU)** — открыть в браузере для красивых формул |
+| [docs/WHITEPAPER_EN.md](docs/WHITEPAPER_EN.md) | Markdown (EN) |
+| [docs/WHITEPAPER_RU.md](docs/WHITEPAPER_RU.md) | Markdown (RU) |
 | [LICENSE](LICENSE) | MIT (EN) |
 | [LICENSE_RU.md](LICENSE_RU.md) | MIT (RU, unofficial translation) |
 
@@ -56,8 +58,10 @@ MIT. See [LICENSE](LICENSE).
 
 | Файл | Описание |
 |------|----------|
-| [docs/WHITEPAPER_EN.md](docs/WHITEPAPER_EN.md) | Полный whitepaper (английский) |
-| [docs/WHITEPAPER_RU.md](docs/WHITEPAPER_RU.md) | Полный whitepaper (русский): формулировка Джессики, маппинг на рынки, **расширенные модели decay** (экспоненциальная + степенная), **дизайн экспериментов** (двойной слепой + PAP) |
+| [docs/WHITEPAPER_EN.html](docs/WHITEPAPER_EN.html) | Whitepaper (EN) — открыть в браузере |
+| [docs/WHITEPAPER_RU.html](docs/WHITEPAPER_RU.html) | **Whitepaper (RU)** — открыть в браузере для красивых формул |
+| [docs/WHITEPAPER_EN.md](docs/WHITEPAPER_EN.md) | Markdown (EN) |
+| [docs/WHITEPAPER_RU.md](docs/WHITEPAPER_RU.md) | Markdown (RU) |
 | [LICENSE](LICENSE) | MIT (EN) |
 | [LICENSE_RU.md](LICENSE_RU.md) | MIT (RU, неофициальный перевод) |
 
